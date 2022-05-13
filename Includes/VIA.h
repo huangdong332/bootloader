@@ -221,7 +221,7 @@ future                    version 1.x
   // We need only the type HWND from <windows.h>.
   // If you don't need windows, the following dummy declaration is all that you 
   // need. Otherwise include <windows.h> before you process this header.
-#if !defined ( _WINDOWS_H ) && !defined ( _WINDEF_H )
+#if !defined ( _WINDOWS_ ) && !defined ( _WINDEF_ )
   typedef void*   HWND;
 #endif // _WINDOWS_
 

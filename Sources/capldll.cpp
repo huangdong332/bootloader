@@ -615,7 +615,7 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
 {
   static uint8_t blockSequenceCounter = 0x0;
   static FILE *tempFile = 0;
-  static char tempName[12] = "hex000.temp";
+  static char tempName[12] = "hex000";
 
   *dataLength = 2;
   data[0] = 0x36;
@@ -624,7 +624,8 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
   // Open temp file
   if (tempFile == 0)
   {
-    tempName[5] += segment;
+    // tempName[5] += segment;
+    sprintf(tempName+3,"%03.3d",segment);
     LOG_INFO("Open temp file: %s", tempName);
     tempFile = fopen(tempName, "r");
     if (tempFile == 0)
@@ -668,7 +669,7 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
 {
   static uint8_t blockSequenceCounter = 0x01;
   static FILE *tempFile = 0;
-  static char tempName[12] = "hex000.temp";
+  static char tempName[12] = "hex000";
 
   *dataLength = 2;
   data[0] = 0x36;
@@ -677,7 +678,8 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
   // Open temp file
   if (tempFile == 0)
   {
-    tempName[5] += segment;
+    // tempName[5] += segment;
+    sprintf(tempName+3,"%03.3d",segment);
     LOG_INFO("Open temp file: %s", tempName);
     tempFile = fopen(tempName, "r");
     if (tempFile == 0)

@@ -29,7 +29,7 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
     char string[256];
     uint32_t extendedLinearAddress = 0x0;
     uint32_t accumulatedAddress = 0xffffffff, startAddress;
-    char tempName[12] = "hex000.temp"; // Temp file name.
+    char tempName[12] = "hex000"; // Temp file name.
     *segmentsCount = 0;
     // Start reading lines from SREC file until EOF.
     LOG_INFO("Open Intel HEX file: %s", fileName);
@@ -80,7 +80,8 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
                     // Increase segementsCount by 1 for every segment.
                     // Parentheses is necessary here because of high priority of ++.
                     (*segmentsCount)++;
-                    tempName[5]++;
+                    sprintf(tempName+3,"%03.3d",*segmentsCount);
+                    // tempName[5]++;
                 }
 
                 // When new segment begins.
@@ -135,7 +136,7 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
     FILE *tempFile = 0, *pFile;
     char string[256];
     uint32_t accumulatedAddress = 0xffffffff, startAddress;
-    char tempName[12] = "hex000.temp"; // Temp file name.
+    char tempName[12] = "hex000"; // Temp file name.
     *segmentsCount = 0;
     // Start reading lines from SREC file until EOF.
     LOG_INFO("Open SREC file: %s", fileName);
@@ -205,7 +206,8 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
                     // Increase segementsCount by 1 for every segment.
                     // Parentheses is necessary here because of high priority of ++.
                     (*segmentsCount)++;
-                    tempName[5]++;
+                    sprintf(tempName+3,"%03.3d",*segmentsCount);
+                    // tempName[5]++;
                 }
 
                 // When new segment begins.

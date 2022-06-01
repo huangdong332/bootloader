@@ -68,7 +68,7 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
                     LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
                              startAddress, accumulatedAddress - 1, size);
                     //...
-                    uint32_t crc = Calculate_CRC32(tempName); /* CRC value is 32bit */
+                    uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
                     AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
                     Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
@@ -192,7 +192,7 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
                     LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
                              startAddress, accumulatedAddress - 1, size);
                     //...
-                    uint32_t crc = Calculate_CRC32(tempName); /* CRC value is 32bit */
+                    uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
                     AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
                     Uint2Array(&crc, checksum[(*segmentsCount)] + 4);

@@ -7,6 +7,7 @@
 
 uint8_t TestSepcifyCRCParameters()
 {
+    extern crcWidth width;
     extern uint32_t polynomial;
     extern uint32_t initialValue;
     extern uint32_t finalXORValue;
@@ -14,7 +15,8 @@ uint8_t TestSepcifyCRCParameters()
     extern uint8_t resultReflected;
 
     appSepcifyCRCParameters();
-    if (polynomial == 0x04C11DB7 &&
+    if (width == CRC32 &&
+        polynomial == 0x04C11DB7 &&
         initialValue == 0xFFFFFFFF &&
         finalXORValue == 0xFFFFFFFF &&
         inputReflected == 0x1 &&
@@ -25,11 +27,40 @@ uint8_t TestSepcifyCRCParameters()
     return 0;
 }
 
+uint8_t TestCalculateCrcTable_CRC8()
+{
+    extern uint32_t crcTable[256];
+    extern uint32_t polynomial;
+
+    polynomial=0x07;
+    CalculateCrcTable_CRC8();
+    if (crcTable[1] == polynomial)
+        log_info("TestCalculateCrcTable_CRC8: pass");
+    else
+        log_info("TestCalculateCrcTable_CRC8: fail");
+    return 0;
+}
+
+uint8_t TestCalculateCrcTable_CRC16()
+{
+    extern uint32_t crcTable[256];
+    extern uint32_t polynomial;
+
+    polynomial=0x1021;
+    CalculateCrcTable_CRC16();
+    if (crcTable[1] == polynomial)
+        log_info("TestCalculateCrcTable_CRC16: pass");
+    else
+        log_info("TestCalculateCrcTable_CRC16: fail");
+    return 0;
+}
+
 uint8_t TestCalculateCrcTable_CRC32()
 {
     extern uint32_t crcTable[256];
     extern uint32_t polynomial;
 
+    polynomial=0x04C11DB7;
     CalculateCrcTable_CRC32();
     if (crcTable[1] == polynomial)
         log_info("TestCalculateCrcTable_CRC32: pass");
@@ -47,6 +78,15 @@ uint8_t TestReflect8()
     return 0;
 }
 
+uint8_t TestReflect16()
+{
+    if (Reflect16(0xeeee) == 0x7777)
+        log_info("TestReflect16: pass");
+    else
+        log_info("TestReflect16: fail");
+    return 0;
+}
+
 uint8_t TestReflect32()
 {
     if (Reflect32(0xeeeeeeee) == 0x77777777)
@@ -57,54 +97,179 @@ uint8_t TestReflect32()
     return 0;
 }
 
-uint8_t TestCalculate_CRC32()
+uint8_t TestCalculate_CRC8()
 {
+    extern crcWidth width;
     extern uint32_t polynomial;
     extern uint32_t initialValue;
     extern uint32_t finalXORValue;
     extern uint8_t inputReflected;
     extern uint8_t resultReflected;
     // CRC-32
+    width=CRC8;
+    polynomial = 0x07;
+    initialValue = 0x0;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xF4000000)
+        log_info("TestCalculate_CRC8 TC1: pass");
+    else
+        log_info("TestCalculate_CRC8 TC1: fail");
+    // CRC-32/BZIP2
+    width=CRC8;
+    polynomial = 0x9B;
+    initialValue = 0xFF;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xDA000000)
+        log_info("TestCalculate_CRC8 TC2: pass");
+    else
+        log_info("TestCalculate_CRC8 TC2: fail");
+    // CRC-32C
+    width=CRC8;
+    polynomial = 0x39;
+    initialValue = 0x0;
+    finalXORValue = 0x0;
+    inputReflected = 0x1;
+    resultReflected = 0x1;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0x15000000)
+        log_info("TestCalculate_CRC8 TC3: pass");
+    else
+        log_info("TestCalculate_CRC8 TC3: fail");
+    // CRC-32D
+    width=CRC8;
+    polynomial = 0xD5;
+    initialValue = 0x0;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xBC000000)
+        log_info("TestCalculate_CRC8 TC4: pass");
+    else
+        log_info("TestCalculate_CRC8 TC4: fail");
+
+    return 0;
+}
+
+uint8_t TestCalculate_CRC16()
+{
+    extern crcWidth width;
+    extern uint32_t polynomial;
+    extern uint32_t initialValue;
+    extern uint32_t finalXORValue;
+    extern uint8_t inputReflected;
+    extern uint8_t resultReflected;
+    // CRC-32
+    width=CRC16;
+    polynomial = 0x1021;
+    initialValue = 0xFFFF;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0x29B10000)
+        log_info("TestCalculate_CRC16 TC1: pass");
+    else
+        log_info("TestCalculate_CRC16 TC1: fail");
+    // CRC-32/BZIP2
+    width=CRC16;
+    polynomial = 0x8005;
+    initialValue = 0x0;
+    finalXORValue = 0x0;
+    inputReflected = 0x1;
+    resultReflected = 0x1;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xBB3D0000)
+        log_info("TestCalculate_CRC16 TC2: pass");
+    else
+        log_info("TestCalculate_CRC16 TC2: fail");
+    // CRC-32C
+    width=CRC16;
+    polynomial = 0x1021;
+    initialValue = 0x1D0F;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xE5CC0000)
+        log_info("TestCalculate_CRC16 TC3: pass");
+    else
+        log_info("TestCalculate_CRC16 TC3: fail");
+    // CRC-32D
+    width=CRC16;
+    polynomial = 0x8005;
+    initialValue = 0x0;
+    finalXORValue = 0x0;
+    inputReflected = 0x0;
+    resultReflected = 0x0;
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xFEE80000)
+        log_info("TestCalculate_CRC16 TC4: pass");
+    else
+        log_info("TestCalculate_CRC16 TC4: fail");
+
+    return 0;
+}
+
+uint8_t TestCalculate_CRC32()
+{
+    extern crcWidth width;
+    extern uint32_t polynomial;
+    extern uint32_t initialValue;
+    extern uint32_t finalXORValue;
+    extern uint8_t inputReflected;
+    extern uint8_t resultReflected;
+    // CRC-32
+    width=CRC32;
     polynomial = 0x04C11DB7;
     initialValue = 0xFFFFFFFF;
     finalXORValue = 0xFFFFFFFF;
     inputReflected = 0x1;
     resultReflected = 0x1;
-    CalculateCrcTable_CRC32();
-    if (Calculate_CRC32("crccheckdata") == 0xCBF43926)
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xCBF43926)
         log_info("TestCalculate_CRC32 TC1: pass");
     else
         log_info("TestCalculate_CRC32 TC1: fail");
     // CRC-32/BZIP2
+    width=CRC32;
     polynomial = 0x04C11DB7;
     initialValue = 0xFFFFFFFF;
     finalXORValue = 0xFFFFFFFF;
     inputReflected = 0x0;
     resultReflected = 0x0;
-    CalculateCrcTable_CRC32();
-    if (Calculate_CRC32("crccheckdata") == 0xFC891918)
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xFC891918)
         log_info("TestCalculate_CRC32 TC2: pass");
     else
         log_info("TestCalculate_CRC32 TC2: fail");
     // CRC-32C
+    width=CRC32;
     polynomial = 0x1EDC6F41;
     initialValue = 0xFFFFFFFF;
     finalXORValue = 0xFFFFFFFF;
     inputReflected = 0x1;
     resultReflected = 0x1;
-    CalculateCrcTable_CRC32();
-    if (Calculate_CRC32("crccheckdata") == 0xE3069283)
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0xE3069283)
         log_info("TestCalculate_CRC32 TC3: pass");
     else
         log_info("TestCalculate_CRC32 TC3: fail");
     // CRC-32D
+    width=CRC32;
     polynomial = 0xA833982B;
     initialValue = 0xFFFFFFFF;
     finalXORValue = 0xFFFFFFFF;
     inputReflected = 0x1;
     resultReflected = 0x1;
-    CalculateCrcTable_CRC32();
-    if (Calculate_CRC32("crccheckdata") == 0x87315576)
+    CalculateCrcTable();
+    if (CalculateCrc("crccheckdata") == 0x87315576)
         log_info("TestCalculate_CRC32 TC4: pass");
     else
         log_info("TestCalculate_CRC32 TC4: fail");
@@ -290,13 +455,16 @@ uint8_t TestblBuffer()
 int main(void)
 {
     FileLoggerInit("testlog");
-    // logger_initFileLogger("testlog", 1024 * 1024, 5);
-    // logger_setLevel(LogLevel_DEBUG);
 
     TestSepcifyCRCParameters();
+    TestCalculateCrcTable_CRC8();
+    TestCalculateCrcTable_CRC16();
     TestCalculateCrcTable_CRC32();
     TestReflect8();
+    TestReflect16();
     TestReflect32();
+    TestCalculate_CRC8();
+    TestCalculate_CRC16();
     TestCalculate_CRC32();
     TestAscCodedHex2Buffer();
     TestUint2Array();

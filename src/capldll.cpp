@@ -38,9 +38,9 @@
 #define CLINKAGE
 #endif
 
-#include "../Includes/cdll.h"
-#include "../Includes/VIA.h"
-#include "../Includes/VIA_CDLL.h"
+#include "cdll.h"
+#include "VIA.h"
+#include "VIA_CDLL.h"
 #include "filepraser.h"
 #include "minilogger.h"
 #include "crc.h"
@@ -581,7 +581,7 @@ CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blOpenFlashFile(const char *fileName,
   LOG_INFO("Get CRC32 specification from crcspec");
   appSepcifyCRCParameters();
   LOG_INFO("Calculate CRC32 look up table");
-  CalculateCrcTable_CRC32();
+  CalculateCrcTable();
 
   // Open the SREC file by path in read only mode.
   LOG_INFO("Open flash file: %s", fileName);

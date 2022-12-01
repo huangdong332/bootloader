@@ -10,7 +10,7 @@
 int32_t main(int32_t argc, char * argv[])
 {
     uint32_t segmentsCount;
-    uint8_t addressAndSize[5][11];
-    uint8_t checksum[5][8];
+    uint8_t addressAndSize[5][8];
+    uint8_t checksum[5][4];
     blOpenFlashFile(argv[1],&segmentsCount,addressAndSize,checksum);
 }

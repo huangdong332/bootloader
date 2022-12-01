@@ -280,8 +280,8 @@ uint8_t TestCalculate_CRC32()
 uint8_t TestHandleHex()
 {
     uint32_t segmentsCount;
-    uint8_t addressAndSize[5][11];
-    uint8_t checksum[5][8];
+    uint8_t addressAndSize[5][8];
+    uint8_t checksum[5][4];
     extern uint32_t polynomial;
     extern uint32_t initialValue;
     extern uint32_t finalXORValue;
@@ -300,15 +300,15 @@ uint8_t TestHandleHex()
         log_info("TestHandleHex TC1: pass");
     else
         log_info("TestHandleHex TC1: fail");
-    if (addressAndSize[0][4] == 0x03 &&
-        addressAndSize[0][10] == 0x40 &&
-        addressAndSize[3][4] == 0x13 &&
-        addressAndSize[3][10] == 0x70)
+    if (addressAndSize[0][1] == 0x03 &&
+        addressAndSize[0][7] == 0x40 &&
+        addressAndSize[3][1] == 0x13 &&
+        addressAndSize[3][7] == 0x70)
         log_info("TestHandleHex TC2: pass");
     else
         log_info("TestHandleHex TC2: fail");
-    if(checksum[0][7]==0x86 &&
-    checksum[3][7]==0xcd)
+    if(checksum[0][3]==0x86 &&
+    checksum[3][3]==0xcd)
         log_info("TestHandleHex TC3: pass");
     else
         log_info("TestHandleHex TC3: fail");
@@ -319,8 +319,8 @@ uint8_t TestHandleHex()
 uint8_t TestHandleSREC()
 {
     uint32_t segmentsCount;
-    uint8_t addressAndSize[5][11];
-    uint8_t checksum[5][8];
+    uint8_t addressAndSize[5][8];
+    uint8_t checksum[5][4];
     extern uint32_t polynomial;
     extern uint32_t initialValue;
     extern uint32_t finalXORValue;
@@ -339,15 +339,15 @@ uint8_t TestHandleSREC()
         log_info("TestHandleSREC TC1: pass");
     else
         log_info("TestHandleSREC TC1: fail");
-    if (addressAndSize[0][4] == 0x03 &&
-        addressAndSize[0][10] == 0x80 &&
-        addressAndSize[3][4] == 0x0f &&
-        addressAndSize[3][10] == 0x10)
+    if (addressAndSize[0][1] == 0x03 &&
+        addressAndSize[0][7] == 0x80 &&
+        addressAndSize[3][1] == 0x0f &&
+        addressAndSize[3][7] == 0x10)
         log_info("TestHandleSREC TC2: pass");
     else
         log_info("TestHandleSREC TC2: fail");
-    if(checksum[0][7]==0x69 &&
-    checksum[3][7]==0x8a)
+    if(checksum[0][3]==0x69 &&
+    checksum[3][3]==0x8a)
         log_info("TestHandleSREC TC3: pass");
     else
         log_info("TestHandleSREC TC3: fail");
@@ -385,22 +385,22 @@ uint8_t TestUint2Array()
 uint8_t TestblOpenFlashFile()
 {
     uint32_t segmentsCount;
-    uint8_t addressAndSize[5][11];
-    uint8_t checksum[5][8];
+    uint8_t addressAndSize[5][8];
+    uint8_t checksum[5][4];
     blOpenFlashFile("test.HEX",&segmentsCount,addressAndSize,checksum);
     if (segmentsCount == 3)
         log_info("TestblOpenFlashFile TC1: pass");
     else
         log_info("TestblOpenFlashFile TC1: fail");
-    if (addressAndSize[0][4] == 0x03 &&
-        addressAndSize[0][10] == 0x40 &&
-        addressAndSize[3][4] == 0x13 &&
-        addressAndSize[3][10] == 0x70)
+    if (addressAndSize[0][1] == 0x03 &&
+        addressAndSize[0][7] == 0x40 &&
+        addressAndSize[3][1] == 0x13 &&
+        addressAndSize[3][7] == 0x70)
         log_info("TestblOpenFlashFile TC2: pass");
     else
         log_info("TestblOpenFlashFile TC2: fail");
-    if(checksum[0][7]==0x86 &&
-    checksum[3][7]==0xcd)
+    if(checksum[0][3]==0x86 &&
+    checksum[3][3]==0xcd)
         log_info("TestblOpenFlashFile TC3: pass");
     else
         log_info("TestblOpenFlashFile TC3: fail");
@@ -409,15 +409,15 @@ uint8_t TestblOpenFlashFile()
         log_info("TestblOpenFlashFile TC4: pass");
     else
         log_info("TestblOpenFlashFile TC4: fail");
-    if (addressAndSize[0][4] == 0x03 &&
-        addressAndSize[0][10] == 0x80 &&
-        addressAndSize[3][4] == 0x0f &&
-        addressAndSize[3][10] == 0x10)
+    if (addressAndSize[0][1] == 0x03 &&
+        addressAndSize[0][7] == 0x80 &&
+        addressAndSize[3][1] == 0x0f &&
+        addressAndSize[3][7] == 0x10)
         log_info("TestblOpenFlashFile TC5: pass");
     else
         log_info("TestblOpenFlashFile TC5: fail");
-    if(checksum[0][7]==0x69 &&
-    checksum[3][7]==0x8a)
+    if(checksum[0][3]==0x69 &&
+    checksum[3][3]==0x8a)
         log_info("TestblOpenFlashFile TC6: pass");
     else
         log_info("TestblOpenFlashFile TC6: fail");
@@ -428,8 +428,8 @@ uint8_t TestblOpenFlashFile()
 uint8_t TestblBuffer()
 {
     uint32_t segmentsCount;
-    uint8_t addressAndSize[5][11];
-    uint8_t checksum[5][8];
+    uint8_t addressAndSize[5][8];
+    uint8_t checksum[5][4];
     uint8_t data[0xfff];
     uint32_t dataLength;
     blOpenFlashFile("test.HEX",&segmentsCount,addressAndSize,checksum);

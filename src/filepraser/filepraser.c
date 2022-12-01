@@ -22,7 +22,7 @@ uint8_t Uint2Array(uint32_t *targetUint, uint8_t *destinationArray)
     return 0;
 }
 
-uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][11], uint8_t checksum[][8])
+uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][8], uint8_t checksum[][4])
 {
     FILE *pFile;
     FILE *tempFile = 0;
@@ -63,15 +63,17 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
                     // Save last segment's size to addressAndSize array.
                     // Code here saves a uint32_t to a uint8_t array
                     // with big endianness(Numerical data is saved as little endianness on Windows).
-                    Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
+                    // Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
+                    Uint2Array(&size, addressAndSize[(*segmentsCount)] + 4);
                     // Print segment info to log file.
                     LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
                              startAddress, accumulatedAddress - 1, size);
                     //...
                     uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
-                    AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
-                    Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
+                    // AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
+                    // Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
+                    Uint2Array(&crc, checksum[(*segmentsCount)]);
 
                     LOG_INFO("Segment %d completed", *segmentsCount);
                     
@@ -92,8 +94,9 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
                 startAddress = address;
                 // Reset accumulated address as start address.
                 accumulatedAddress = address;
-                AscCodedHex2Buffer("340044", addressAndSize[*segmentsCount]);
-                Uint2Array(&address, addressAndSize[*segmentsCount] + 3);
+                // AscCodedHex2Buffer("340044", addressAndSize[*segmentsCount]);
+                // Uint2Array(&address, addressAndSize[*segmentsCount] + 3);
+                Uint2Array(&address, addressAndSize[*segmentsCount]);
                 //...
                 // Open a new temp file.
                 LOG_INFO("Open temp file: %s", tempName);
@@ -131,7 +134,7 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
     return 0;
 }
 
-uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][11], uint8_t checksum[][8])
+uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][8], uint8_t checksum[][4])
 {
     FILE *tempFile = 0, *pFile;
     char string[256];
@@ -187,15 +190,17 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
                     // Save last segment's size to addressAndSize array.
                     // Code here saves a uint32_t to a uint8_t array
                     // with big endianness(Numerical data is saved as little endianness on Windows).
-                    Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
+                    // Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
+                    Uint2Array(&size, addressAndSize[(*segmentsCount)] + 4);
                     // Print segment info to log file.
                     LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
                              startAddress, accumulatedAddress - 1, size);
                     //...
                     uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
-                    AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
-                    Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
+                    // AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
+                    // Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
+                    Uint2Array(&crc, checksum[(*segmentsCount)]);
 
                     LOG_INFO("Segment %d completed", *segmentsCount);
 
@@ -218,8 +223,9 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
                 startAddress = address;
                 // Reset accumulated address as start address.
                 accumulatedAddress = address;
-                AscCodedHex2Buffer("340044", addressAndSize[*segmentsCount]);
-                Uint2Array(&address, addressAndSize[*segmentsCount] + 3);
+                // AscCodedHex2Buffer("340044", addressAndSize[*segmentsCount]);
+                // Uint2Array(&address, addressAndSize[*segmentsCount] + 3);
+                Uint2Array(&address, addressAndSize[*segmentsCount]);
                 //...
                 // Open a new temp file.
                 LOG_INFO("Open temp file: %s", tempName);

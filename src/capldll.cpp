@@ -569,8 +569,8 @@ void CAPLEXPORT CAPLPASCAL appPutDataOnePar(const uint8_t dataBlock[])
 // BOOTLOADER SECTION
 
 CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blOpenFlashFile(const char *fileName,
-                                              uint32_t *segmentsCount, uint8_t addressAndSize[][11],
-                                              uint8_t checksum[][8])
+                                              uint32_t *segmentsCount, uint8_t addressAndSize[][8],
+                                              uint8_t checksum[][4])
 {
   FILE *pFile = 0;  // SREC file pointer
   char string[255]; // String to receive lines read from the SREC file.

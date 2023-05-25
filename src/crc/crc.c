@@ -1,7 +1,20 @@
+/**
+ * @file crc.c
+ * @author Huang Dong (dohuang@borgwarner.com)
+ * @brief This file contains functions to calculate CRC-* value of a file.
+ * @version 0.1
+ * @date 2023-05-24
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "crc.h"
 
 //-------------------Handle CRC32 calculation-------------------------------
-
+/**
+ * @brief Local variables definition.
+ * 
+ */
 uint32_t crcTable[256];
 crcWidth width;
 uint32_t polynomial = 0x04C11DB7;
@@ -9,6 +22,18 @@ uint32_t initialValue = 0x0;
 uint32_t finalXORValue = 0x0;
 uint8_t inputReflected=0, resultReflected=0;
 
+/*
+Read CRC algorithm specification form crcspec.
+*/
+
+/**
+ * @brief Read CRC algorithm specification form crcspec file.
+ * Local variables width, polynomial, initialValue, finalXORValue, inputReflected
+ * and resultReflected will have the value defined in the crcspec file after this function call.
+ * The crcspec file should be located in CANoe project root.
+ * 
+ * @return uint32_t 
+ */
 uint32_t appSepcifyCRCParameters()
 {
   FILE * pFile;
@@ -61,6 +86,13 @@ uint32_t appSepcifyCRCParameters()
   return 0;
 }
 
+/**
+ * @brief Reflect an uint8 variable.
+ * For example, an uint8 11001001(binary form) to uint8 10010011(binary form).
+ * 
+ * @param val An uint8 to be reflected.
+ * @return uint8_t 
+ */
 uint8_t Reflect8(uint8_t val)
 {
   uint8_t resVal = 0;
@@ -76,6 +108,13 @@ uint8_t Reflect8(uint8_t val)
   return resVal;
 }
 
+
+/**
+ * @brief Reflect an uint16 variable.
+ * 
+ * @param val An uint16 to be reflected.
+ * @return uint16_t 
+ */
 uint16_t Reflect16(uint16_t val)
 {
   uint16_t resVal = 0;
@@ -91,6 +130,12 @@ uint16_t Reflect16(uint16_t val)
   return resVal;
 }
 
+/**
+ * @brief Reflect an uint32 variable.
+ * 
+ * @param val An uint32 to be reflected.
+ * @return uint32_t 
+ */
 uint32_t Reflect32(uint32_t val)
 {
   uint32_t resVal = 0;
@@ -106,6 +151,12 @@ uint32_t Reflect32(uint32_t val)
   return resVal;
 }
 
+/**
+ * @brief Calculate CRC look up table for further CRC calculation.
+ * Local variable polynomial will be used in this look up table calculation.
+ * 
+ * @return int32_t 
+ */
 int32_t CalculateCrcTable_CRC8()
 {
     /* iterate over all byte values 0 - 255 */
@@ -131,6 +182,12 @@ int32_t CalculateCrcTable_CRC8()
     return 0;
 }
 
+/**
+ * @brief Calculate CRC look up table for further CRC calculation.
+ * Local variable polynomial will be used in this look up table calculation.
+ * 
+ * @return int32_t 
+ */
 int32_t CalculateCrcTable_CRC16()
 {
     for (int divident = 0; divident < 256; divident++) /* iterate over all possible input byte values 0 - 255 */
@@ -155,6 +212,12 @@ int32_t CalculateCrcTable_CRC16()
     return 0;
 }
 
+/**
+ * @brief Calculate CRC look up table for further CRC calculation.
+ * Local variable polynomial will be used in this look up table calculation.
+ * 
+ * @return int32_t 
+ */
 uint8_t CalculateCrcTable_CRC32()
 {
   for (int divident = 0; divident < 256; divident++) /* iterate over all possible input byte values 0 - 255 */
@@ -178,6 +241,13 @@ uint8_t CalculateCrcTable_CRC32()
   return 0;
 }
 
+/**
+ * @brief This is a warpper function.
+ * Bit specific look up table calculation function will be called 
+ * according to local variable width.
+ * 
+ * @return int32_t 
+ */
 int32_t CalculateCrcTable()
 {
   switch (width)
@@ -201,6 +271,12 @@ int32_t CalculateCrcTable()
   return 0;
 }
 
+/**
+ * @brief Calculate CRC8 of a file.
+ * 
+ * @param fileName Path to a file.
+ * @return uint8_t Result CRC8.
+ */
 uint8_t Calculate_CRC8(const char* fileName)
 {
     FILE * pFile;
@@ -232,6 +308,12 @@ uint8_t Calculate_CRC8(const char* fileName)
     return crc;
 }
 
+/**
+ * @brief Calculate CRC16 of a file.
+ * 
+ * @param fileName Path to a file.
+ * @return uint16_t Result CRC16.
+ */
 uint16_t Calculate_CRC16(const char* fileName)
 {
     FILE * pFile;
@@ -263,6 +345,12 @@ uint16_t Calculate_CRC16(const char* fileName)
     return crc;
 }
 
+/**
+ * @brief Calculate CRC32 of a file.
+ * 
+ * @param fileName Path to a file.
+ * @return uint32_t Result CRC32.
+ */
 uint32_t Calculate_CRC32(const char* fileName)
 {
     FILE * pFile;
@@ -294,6 +382,14 @@ uint32_t Calculate_CRC32(const char* fileName)
     return crc;
 }
 
+/**
+ * @brief This is a warpper function.
+ * Bit specific CRC calculation function will be called 
+ * accroding to local variable width.
+ * 
+ * @param fileName 
+ * @return uint32_t Result CRC value.
+ */
 uint32_t CalculateCrc(const char* fileName)
 {
   uint32_t crc;

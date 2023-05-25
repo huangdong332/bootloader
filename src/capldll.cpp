@@ -30,13 +30,6 @@
 
 #define USECDLL_FEATURE
 #define _BUILDNODELAYERDLL
-// #define MINGW_C
-
-#ifdef MINGW_C
-#define CLINKAGE extern "C"
-#else
-#define CLINKAGE
-#endif
 
 #include "cdll.h"
 #include "VIA.h"
@@ -567,8 +560,18 @@ void CAPLEXPORT CAPLPASCAL appPutDataOnePar(const uint8_t dataBlock[])
 }
 
 // BOOTLOADER SECTION
+/*
+Function Name: blOpenFlashFile
 
-CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blOpenFlashFile(const char *fileName,
+Function: Parsing a HEX or SREC file. 
+
+Parameters:
+  fileName:       The path of a HEX or SREC file to be parsed.
+  segmentsCount:  Qauntity of blockes will be saved in this variable.
+  AddressAndSize: Start address and size of each block will be saved in this array.
+  checksum:       Checksum of each block will be saved in this array.
+*/
+int32_t CAPLEXPORT CAPLPASCAL blOpenFlashFile(const char *fileName,
                                               uint32_t *segmentsCount, uint8_t addressAndSize[][8],
                                               uint8_t checksum[][4])
 {
@@ -610,7 +613,21 @@ CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blOpenFlashFile(const char *fileName,
   return 0;
 }
 
-CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blBuffer(uint32_t bufferLength,
+/*
+Function name: blBuffer
+
+Function: Composing whole Transfer Data PDUs i.e. 0x3601xxxx...xxxxx 
+according to the data in each block and fill the transimition buffer
+with those PDUs.
+
+Parameters:
+  bufferLength: Availabel length of the transimition buffer.
+  data:         Transimition buffer. The PDU will be saved in this buffer.
+  dataLength:   Length of a PDU saved in the transimition buffer will
+                be saved in this variable.
+  segment:      Indicate which block will be used for composing PDUs.
+*/
+int32_t CAPLEXPORT CAPLPASCAL blBuffer(uint32_t bufferLength,
 uint8_t *data, uint32_t *dataLength, uint32_t segment)
 {
   static uint8_t blockSequenceCounter = 0x0;
@@ -664,7 +681,16 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
   return 0;
 }
 
-CLINKAGE int32_t CAPLEXPORT CAPLPASCAL blFaultInjectionBufferCorruptData(uint32_t bufferLength,
+/**
+ * @brief 
+ * 
+ * @param bufferLength 
+ * @param data 
+ * @param dataLength 
+ * @param segment 
+ * @return int32_t 
+ */
+int32_t CAPLEXPORT CAPLPASCAL blFaultInjectionBufferCorruptData(uint32_t bufferLength,
 uint8_t *data, uint32_t *dataLength, uint32_t segment)
 {
   static uint8_t blockSequenceCounter = 0x01;
@@ -716,6 +742,22 @@ uint8_t *data, uint32_t *dataLength, uint32_t segment)
   return 0;
 }
 
+int32_t CAPLEXPORT CAPLPASCAL blRequest2Array(char * request, uint32_t &requestLength, uint8_t * data)
+{
+  uint32_t strLength;
+  strLength=strlen(request)/2;
+  if(requestLength==0) requestLength=strLength;
+  if(requestLength>4095) requestLength=4095;
+  for(int i=0;i<requestLength;i++)
+  {
+    if(i<strLength)
+    sscanf(request+2*i,"%2x",data+i);
+    else
+    data[i]=i;
+  }
+  return 0;
+}
+
 // ============================================================================
 // CAPL_DLL_INFO_LIST : list of exported functions
 //   The first field is predefined and mustn't be changed!
@@ -744,6 +786,7 @@ CAPL_DLL_INFO4 table[] = {
     {"dllBuffer", (CAPL_FARCALL)blBuffer, "BOOT_LOADER", "This function will fill the data buffer with 0xff", 'L', 4, {'D', 'B', 'D' - 128, 'D'}, "\000\001\000\000", {"bufferLength", "data", "dataLength", "segment"}},
     {"dllFaultInjectionBufferCorruptData", (CAPL_FARCALL)blFaultInjectionBufferCorruptData, "BOOT_LOADER", "This function will fill the data buffer with 0xff", 'L', 4, {'D', 'B', 'D' - 128, 'D'}, "\000\001\000\000", {"bufferLength", "data", "dataLength", "segment"}},
     {"dllOpenFlashFile", (CAPL_FARCALL)blOpenFlashFile, "BOOT_LOADER", "This function will open a SREC file", 'L', 4, {'C', 'D' - 128, 'B', 'B'}, "\001\000\002\002", {"fileName", "segmentsCount", "addressAndSize", "checksum"}},
+    {"dllRequest2Array", (CAPL_FARCALL)blRequest2Array, "BOOT_LOADER", "This function will cast a hex-coded string to an array", 'L', 3, {'C', 'D'-128, 'B'}, "\001\000\001", {"request", "requestLength", "data"}},
 
     {0, 0}};
 CAPLEXPORT CAPL_DLL_INFO4 *caplDllTable4 = table;

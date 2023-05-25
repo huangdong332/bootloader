@@ -12,6 +12,9 @@ CRC16=0x16,
 CRC32=0x32
 } crcWidth;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 uint32_t appSepcifyCRCParameters();
 uint8_t Reflect8(uint8_t val);
 uint16_t Reflect16(uint16_t val);
@@ -24,5 +27,7 @@ uint8_t Calculate_CRC8(const char* fileName);
 uint16_t Calculate_CRC16(const char* fileName);
 uint32_t Calculate_CRC32(const char* fileName);
 uint32_t CalculateCrc(const char* fileName);
-
+#ifdef __cplusplus
+}
+#endif
 #endif

@@ -18,8 +18,13 @@
 #define log_warn(...) Logger("W",__VA_ARGS__)
 #define log_fatal(...) Logger("F",__VA_ARGS__)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void FileLoggerInit(const char *fileName);
 void Logger(const char* tag, const char* messages,...);
 void FileLogger(const char* tag, const char* message,...);
-
+#ifdef __cplusplus
+}
+#endif
 #endif

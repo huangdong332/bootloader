@@ -1,6 +1,23 @@
+/**
+ * @file filepraser.c
+ * @author Huang Dong (dohuang@borgwarner.com)
+ * @brief This file contain functions to parse the Hex or SREC file.
+ * @version 0.1
+ * @date 2023-05-24
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "filepraser.h"
 
-//
+/**
+ * @brief This function convert a string containning hex data to a char array.
+ * For example, "120A3F" to {0x12, 0x0A, 0x3F}.
+ * 
+ * @param ascCodedHex A hex data string.
+ * @param destinationBuffer A buffer to save the result hex data.
+ * @return uint8_t 
+ */
 uint8_t AscCodedHex2Buffer(const char *ascCodedHex, uint8_t *destinationBuffer)
 {
     uint32_t tempHex, i = 0;
@@ -13,6 +30,14 @@ uint8_t AscCodedHex2Buffer(const char *ascCodedHex, uint8_t *destinationBuffer)
     return 0;
 }
 
+/**
+ * @brief This function converts an unsigned int to a unsigned char array.
+ * For example, 120A3F to {0x12, 0x0A, 0x3F}.
+ * 
+ * @param targetUint A uint32 to be converted.
+ * @param destinationArray A uint8 buffer to save the result data.
+ * @return uint8_t 
+ */
 uint8_t Uint2Array(uint32_t *targetUint, uint8_t *destinationArray)
 {
     for (uint8_t i = 0; i < 4; i++)
@@ -22,6 +47,15 @@ uint8_t Uint2Array(uint32_t *targetUint, uint8_t *destinationArray)
     return 0;
 }
 
+/**
+ * @brief This function can parse a Hex file.
+ * 
+ * @param fileName A Hex file path.
+ * @param segmentsCount The amount of blocks in a Hex file will be saved in this buffer.
+ * @param addressAndSize The start address and size of each block will be saved in this buffer.
+ * @param checksum The crc-* checksum of each block will be saved in this buffer.
+ * @return uint8_t 
+ */
 uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][8], uint8_t checksum[][4])
 {
     FILE *pFile;
@@ -65,15 +99,15 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
                     // with big endianness(Numerical data is saved as little endianness on Windows).
                     // Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
                     Uint2Array(&size, addressAndSize[(*segmentsCount)] + 4);
-                    // Print segment info to log file.
-                    LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
-                             startAddress, accumulatedAddress - 1, size);
                     //...
                     uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
                     // AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
                     // Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
                     Uint2Array(&crc, checksum[(*segmentsCount)]);
+                    // Print segment info to log file.
+                    LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x Checksum: %.8x",
+                             startAddress, accumulatedAddress - 1, size, crc);
 
                     LOG_INFO("Segment %d completed", *segmentsCount);
                     
@@ -134,6 +168,15 @@ uint8_t HandleHex(const char *fileName, uint32_t *segmentsCount, uint8_t address
     return 0;
 }
 
+/**
+ * @brief This function can parse a SREC file.
+ * 
+ * @param fileName A SREC file path.
+ * @param segmentsCount The amount of blocks in a Hex file will be saved in this buffer.
+ * @param addressAndSize The start address and size of each block will be saved in this buffer.
+ * @param checksum The crc-* checksum of each block will be saved in this buffer.
+ * @return uint8_t 
+ */
 uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addressAndSize[][8], uint8_t checksum[][4])
 {
     FILE *tempFile = 0, *pFile;
@@ -144,7 +187,7 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
     // Start reading lines from SREC file until EOF.
     LOG_INFO("Open SREC file: %s", fileName);
     pFile = fopen(fileName, "r");
-    LOG_INFO("Reading lines from SREC file %s");
+    LOG_INFO("Reading lines from SREC file %s",fileName);
     while (fscanf(pFile, "%s", string) != EOF)
     {
         uint32_t address, length, recordType; // Save length in the data line.
@@ -192,15 +235,15 @@ uint8_t HandleSREC(const char *fileName, uint32_t *segmentsCount, uint8_t addres
                     // with big endianness(Numerical data is saved as little endianness on Windows).
                     // Uint2Array(&size, addressAndSize[(*segmentsCount)] + 7);
                     Uint2Array(&size, addressAndSize[(*segmentsCount)] + 4);
-                    // Print segment info to log file.
-                    LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x",
-                             startAddress, accumulatedAddress - 1, size);
                     //...
                     uint32_t crc = CalculateCrc(tempName); /* CRC value is 32bit */
 
                     // AscCodedHex2Buffer("31010202", checksum[(*segmentsCount)]);
                     // Uint2Array(&crc, checksum[(*segmentsCount)] + 4);
                     Uint2Array(&crc, checksum[(*segmentsCount)]);
+                    // Print segment info to log file.
+                    LOG_INFO("Address: 0x%.8x-%.8x Size: %.8x Checksum: %.8x",
+                             startAddress, accumulatedAddress - 1, size, crc);
 
                     LOG_INFO("Segment %d completed", *segmentsCount);
 

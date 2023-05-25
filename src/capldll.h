@@ -13,5 +13,4 @@ int32_t CAPLDLL_API __stdcall blOpenFlashFile(const char *fileName,
                                               uint8_t checksum[][4]);
 int32_t CAPLDLL_API __stdcall blBuffer(uint32_t bufferLength,
 uint8_t *data, uint32_t *dataLength, uint32_t segment);
-
 #endif
